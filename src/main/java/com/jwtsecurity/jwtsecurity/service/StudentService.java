@@ -5,10 +5,12 @@ import com.jwtsecurity.jwtsecurity.request.address.AddressCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.address.AddressUpdateRequest;
 import com.jwtsecurity.jwtsecurity.request.student.StudentCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.student.StudentUpdateRequest;
+import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectCreateRequest;
+import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectUpdateRequest;
 import com.jwtsecurity.jwtsecurity.response.AddressGetResponse;
-import com.jwtsecurity.jwtsecurity.response.StudentGetResponse;
+import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
+import com.jwtsecurity.jwtsecurity.response.student.StudentGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.*;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 public interface StudentService {
@@ -35,5 +37,12 @@ public interface StudentService {
 
 
     //SUBJECT
+
+    DataResult<List<SubjectGetResponse>> getStudentSubjectsByStudentId(Long studentId);
+
+    DataResult<SubjectGetResponse> addStudentSubject(StudentSubjectCreateRequest studentSubjectCreateRequest);
+
+    DataResult<SubjectGetResponse> updateStudentSubject(Long studentId, Long subjectId, StudentSubjectUpdateRequest studentSubjectUpdateRequest);
+
 
 }

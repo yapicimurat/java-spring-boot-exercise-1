@@ -19,11 +19,8 @@ public class Teacher extends BaseModel{
     private String surname;
 
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "Teacher_Subject",
-    joinColumns = @JoinColumn(name = "teacher_id"),
-    inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private List<Subject> subjects;
+    @OneToMany(mappedBy = "teacher")
+    List<TeacherSubject> teacherSubject;
 
 
 

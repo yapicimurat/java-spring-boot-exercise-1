@@ -26,13 +26,8 @@ public class Student extends BaseModel {
     //Student -> Student_Subject; One-to-Many relation | Subject -> Student; One-to-Many relation
     //then Student -> Subject; Many-to-Many relation...
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "Student_Subject",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    private List<Subject> subjects;
+    @OneToMany(mappedBy = "student")
+    List<StudentSubject> studentSubjects;
 
 }
 

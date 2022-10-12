@@ -9,6 +9,12 @@ import java.time.LocalDateTime;
 public class EntityNotFoundException extends RuntimeException {
 
     private final HttpStatus status = HttpStatus.NOT_FOUND;
-    private final String message = ExceptionMessages.NOT_FOUND;
+    private String message = ExceptionMessages.NOT_FOUND;
     private final LocalDateTime localDateTime = LocalDateTime.now();
+
+    public EntityNotFoundException(){}
+
+    public EntityNotFoundException(String message){
+        this.message = message;
+    }
 }

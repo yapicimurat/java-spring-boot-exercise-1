@@ -1,22 +1,29 @@
 package com.jwtsecurity.jwtsecurity.service.imp;
+
 import com.jwtsecurity.jwtsecurity.consts.exception.ResultMessages;
 import com.jwtsecurity.jwtsecurity.exception.EntityNotFoundException;
 import com.jwtsecurity.jwtsecurity.model.Address;
 import com.jwtsecurity.jwtsecurity.model.Student;
+import com.jwtsecurity.jwtsecurity.model.StudentSubject;
+import com.jwtsecurity.jwtsecurity.model.Subject;
+import com.jwtsecurity.jwtsecurity.model.key.StudentSubjectKey;
 import com.jwtsecurity.jwtsecurity.repository.AddressRepository;
 import com.jwtsecurity.jwtsecurity.repository.StudentRepository;
+import com.jwtsecurity.jwtsecurity.repository.StudentSubjectRepository;
+import com.jwtsecurity.jwtsecurity.repository.SubjectRepository;
 import com.jwtsecurity.jwtsecurity.request.address.AddressCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.address.AddressUpdateRequest;
 import com.jwtsecurity.jwtsecurity.request.student.StudentCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.student.StudentUpdateRequest;
+import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectCreateRequest;
+import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectUpdateRequest;
 import com.jwtsecurity.jwtsecurity.response.AddressGetResponse;
-import com.jwtsecurity.jwtsecurity.response.StudentGetResponse;
+import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
+import com.jwtsecurity.jwtsecurity.response.student.StudentGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.*;
 import com.jwtsecurity.jwtsecurity.service.StudentService;
-import com.jwtsecurity.jwtsecurity.service.dto.StudentGetDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +33,16 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
     private final AddressRepository addressRepository;
+    private final SubjectRepository subjectRepository;
+    private final StudentSubjectRepository studentSubjectRepository;
 
     private final ModelMapper modelMapper = BaseService.getModelMapperInstance();
 
-    public StudentServiceImpl(StudentRepository studentRepository, AddressRepository addressRepository){
+    public StudentServiceImpl(StudentRepository studentRepository, AddressRepository addressRepository, SubjectRepository subjectRepository, StudentSubjectRepository studentSubjectRepository){
         this.studentRepository = studentRepository;
         this.addressRepository = addressRepository;
+        this.subjectRepository = subjectRepository;
+        this.studentSubjectRepository = studentSubjectRepository;
     }
 
     @Override
@@ -71,7 +82,7 @@ public class StudentServiceImpl implements StudentService {
 
         studentRepository.save(foundedStudent);
 
-        return new SuccessDataResult(modelMapper.map(foundedStudent, StudentGetDto.class), ResultMessages.SUCCESS_UPDATE_ENTITY);
+        return new SuccessDataResult(modelMapper.map(foundedStudent, StudentGetResponse.class), ResultMessages.SUCCESS_UPDATE_ENTITY);
     }
 
     @Override
@@ -120,9 +131,60 @@ public class StudentServiceImpl implements StudentService {
         return new SuccessResult(ResultMessages.SUCCESS_DELETE_ENTITY);
     }
 
+    @Override
+    public DataResult<List<SubjectGetResponse>> getStudentSubjectsByStudentId(Long studentId) {
+        final Student foundedStudent = findStudentById(studentId);
+
+        return new SuccessDataResult(modelMapper.map(foundedStudent.getStudentSubjects(), SubjectGetResponse.class), ResultMessages.EMPTY);
+    }
+
+    @Override
+    public DataResult<SubjectGetResponse> addStudentSubject(StudentSubjectCreateRequest studentSubjectCreateRequest) {
+        final StudentSubject studentSubject = new StudentSubject();
+        final Student foundedStudent = findStudentById(studentSubjectCreateRequest.getStudentId());
+        final Subject foundedSubject = findSubjectBySubjectId(studentSubjectCreateRequest.getSubjectId());
+
+
+        studentSubject.setStudentId(studentSubjectCreateRequest.getStudentId());
+        studentSubject.setSubjectId(studentSubjectCreateRequest.getSubjectId());
+
+
+
+        studentSubjectRepository.save(studentSubject);
+
+        return new SuccessDataResult(modelMapper.map(foundedSubject, SubjectGetResponse.class), ResultMessages.SUCCESS_CREATE_ENTITY);
+    }
+
+    //TODO: HATA VAR; UPDATE ISLEMI YAPMIYOR...
+    @Override
+    public DataResult<SubjectGetResponse> updateStudentSubject(Long studentId, Long subjectId, StudentSubjectUpdateRequest studentSubjectUpdateRequest) {
+        final Student foundedStudent = findStudentById(studentSubjectUpdateRequest.getStudentId());
+        final Subject foundedSubject = findSubjectBySubjectId(studentSubjectUpdateRequest.getSubjectId());
+
+        StudentSubject foundedStudentSubject = findStudentSubjectByStudentIdAndSubjectId(studentId, subjectId);
+        foundedStudentSubject.setSubjectId(studentSubjectUpdateRequest.getSubjectId());
+        foundedStudentSubject.setStudentId(studentSubjectUpdateRequest.getStudentId());
+
+        studentSubjectRepository.save(foundedStudentSubject);
+
+        return new SuccessDataResult(modelMapper.map(foundedSubject, SubjectGetResponse.class), ResultMessages.SUCCESS_UPDATE_ENTITY);
+    }
+
+    //PRIVATE HELPER METHODS
     private Student findStudentById(Long studentId){
         return Optional.ofNullable(studentRepository.getStudentById(studentId))
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("Ogrenci bulunamadi."));
+    }
+
+    private Subject findSubjectBySubjectId(Long subjectId){
+        Subject foundedSubject = Optional.ofNullable(subjectRepository.getSubjectById(subjectId))
+                .orElseThrow(() -> new EntityNotFoundException("Ders bulunamadi."));
+        return foundedSubject;
+    }
+
+    private StudentSubject findStudentSubjectByStudentIdAndSubjectId(Long studentId, Long subjectId){
+        return Optional.ofNullable(studentSubjectRepository.getStudentSubjectByStudentIdAndSubjectId(studentId, subjectId))
+                .orElseThrow(() -> new EntityNotFoundException("Ogrenci dersi bulunamadi."));
     }
 
     private Address getStudentAddressByStudentId(Long studentId){

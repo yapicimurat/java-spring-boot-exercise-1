@@ -49,6 +49,8 @@ public class SubjectServiceImpl implements SubjectService {
 
         subject.setName(subjectCreateRequest.name);
 
+        subjectRepository.save(subject);
+
         return new SuccessDataResult(modelMapper.map(subject, SubjectGetResponse.class), ResultMessages.SUCCESS_CREATE_ENTITY);
     }
 
