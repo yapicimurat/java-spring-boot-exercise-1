@@ -35,14 +35,12 @@ public interface StudentService {
 
     Result deleteAddress(Long studentId);
 
-
     //SUBJECT
-
     DataResult<List<SubjectGetResponse>> getStudentSubjectsByStudentId(Long studentId);
 
     DataResult<SubjectGetResponse> addStudentSubject(StudentSubjectCreateRequest studentSubjectCreateRequest);
 
-    DataResult<SubjectGetResponse> updateStudentSubject(Long studentId, Long subjectId, StudentSubjectUpdateRequest studentSubjectUpdateRequest);
+    DataResult<StudentGetResponse> updateStudentSubject(Long targetSubjectId, StudentSubjectUpdateRequest studentSubjectUpdateRequest);
 
-
+    Result deleteStudentSubject(final Long studentId, final Long subjectId);
 }

@@ -16,9 +16,11 @@ public class Subject extends BaseModel{
 
     private String name;
 
+    @ManyToMany(mappedBy = "subjects")
+    private List<Student> students;
 
-    @OneToMany(mappedBy = "subject")
-    private List<StudentSubject> studentSubjects;
+    @ManyToMany(mappedBy = "subjects")
+    private List<Teacher> teacher;
 
 
 }

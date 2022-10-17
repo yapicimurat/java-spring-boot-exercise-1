@@ -8,12 +8,13 @@ import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectCreateRe
 import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectUpdateRequest;
 import com.jwtsecurity.jwtsecurity.response.AddressGetResponse;
 import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
-import com.jwtsecurity.jwtsecurity.response.student.StudentGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.DataResult;
 import com.jwtsecurity.jwtsecurity.response.result.Result;
+import com.jwtsecurity.jwtsecurity.response.student.StudentGetResponse;
 import com.jwtsecurity.jwtsecurity.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -42,7 +43,7 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DataResult<StudentGetResponse>> updateStudent(@RequestParam("id") Long studentId,@RequestBody StudentUpdateRequest studentUpdateRequest){
+    public ResponseEntity<DataResult<StudentGetResponse>> updateStudent(@PathVariable("id") Long studentId, @RequestBody StudentUpdateRequest studentUpdateRequest){
         return ResponseEntity.ok(studentService.updateStudent(studentId, studentUpdateRequest));
     }
 
@@ -84,9 +85,13 @@ public class StudentController {
         return ResponseEntity.ok((studentService.addStudentSubject(studentSubjectCreateRequest)));
     }
 
-    @PutMapping("/subject/{studentId}/{subjectId}")
-    public ResponseEntity<DataResult<SubjectGetResponse>> updateStudentSubject(@PathVariable("studentId") Long studentId, @PathVariable("subjectId") Long subjectId, @RequestBody StudentSubjectUpdateRequest studentSubjectUpdateRequest){
-        return ResponseEntity.ok(studentService.updateStudentSubject(studentId, subjectId, studentSubjectUpdateRequest));
+    @PutMapping("/subject/{targetSubjectId}")
+    public ResponseEntity<DataResult<StudentGetResponse>> updateStudentSubject(@PathVariable("targetSubjectId") Long targetSubjectId, @RequestBody StudentSubjectUpdateRequest studentSubjectUpdateRequest){
+        return ResponseEntity.ok(studentService.updateStudentSubject(targetSubjectId, studentSubjectUpdateRequest));
     }
 
+    @DeleteMapping("/{studentId}/subject/{subjectId}")
+    public ResponseEntity<Result> deleteStudentSubject(@PathVariable("studentId") Long studentId, @PathVariable("subjectId") Long subjectId){
+        return ResponseEntity.ok(studentService.deleteStudentSubject(studentId, subjectId));
+    }
 }

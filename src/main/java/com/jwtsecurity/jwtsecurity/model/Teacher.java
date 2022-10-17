@@ -18,10 +18,12 @@ public class Teacher extends BaseModel{
 
     private String surname;
 
-
-    @OneToMany(mappedBy = "teacher")
-    List<TeacherSubject> teacherSubject;
-
-
+    @ManyToMany
+    @JoinTable(
+            name = "teacher_subject",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    private List<Subject> subjects;
 
 }

@@ -4,12 +4,9 @@ import com.jwtsecurity.jwtsecurity.consts.exception.ResultMessages;
 import com.jwtsecurity.jwtsecurity.exception.EntityNotFoundException;
 import com.jwtsecurity.jwtsecurity.model.Address;
 import com.jwtsecurity.jwtsecurity.model.Student;
-import com.jwtsecurity.jwtsecurity.model.StudentSubject;
 import com.jwtsecurity.jwtsecurity.model.Subject;
-import com.jwtsecurity.jwtsecurity.model.key.StudentSubjectKey;
 import com.jwtsecurity.jwtsecurity.repository.AddressRepository;
 import com.jwtsecurity.jwtsecurity.repository.StudentRepository;
-import com.jwtsecurity.jwtsecurity.repository.StudentSubjectRepository;
 import com.jwtsecurity.jwtsecurity.repository.SubjectRepository;
 import com.jwtsecurity.jwtsecurity.request.address.AddressCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.address.AddressUpdateRequest;
@@ -19,11 +16,17 @@ import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectCreateRe
 import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectUpdateRequest;
 import com.jwtsecurity.jwtsecurity.response.AddressGetResponse;
 import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
+import com.jwtsecurity.jwtsecurity.response.result.DataResult;
+import com.jwtsecurity.jwtsecurity.response.result.Result;
+import com.jwtsecurity.jwtsecurity.response.result.SuccessDataResult;
+import com.jwtsecurity.jwtsecurity.response.result.SuccessResult;
 import com.jwtsecurity.jwtsecurity.response.student.StudentGetResponse;
-import com.jwtsecurity.jwtsecurity.response.result.*;
 import com.jwtsecurity.jwtsecurity.service.StudentService;
+import org.hibernate.Transaction;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,15 +37,13 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final AddressRepository addressRepository;
     private final SubjectRepository subjectRepository;
-    private final StudentSubjectRepository studentSubjectRepository;
 
     private final ModelMapper modelMapper = BaseService.getModelMapperInstance();
 
-    public StudentServiceImpl(StudentRepository studentRepository, AddressRepository addressRepository, SubjectRepository subjectRepository, StudentSubjectRepository studentSubjectRepository){
+    public StudentServiceImpl(StudentRepository studentRepository, AddressRepository addressRepository, SubjectRepository subjectRepository){
         this.studentRepository = studentRepository;
         this.addressRepository = addressRepository;
         this.subjectRepository = subjectRepository;
-        this.studentSubjectRepository = studentSubjectRepository;
     }
 
     @Override
@@ -135,39 +136,53 @@ public class StudentServiceImpl implements StudentService {
     public DataResult<List<SubjectGetResponse>> getStudentSubjectsByStudentId(Long studentId) {
         final Student foundedStudent = findStudentById(studentId);
 
-        return new SuccessDataResult(modelMapper.map(foundedStudent.getStudentSubjects(), SubjectGetResponse.class), ResultMessages.EMPTY);
+        return null;
+        //return new SuccessDataResult(modelMapper.map(foundedStudent.getStudentSubjects(), SubjectGetResponse.class), ResultMessages.EMPTY);
     }
 
     @Override
     public DataResult<SubjectGetResponse> addStudentSubject(StudentSubjectCreateRequest studentSubjectCreateRequest) {
-        final StudentSubject studentSubject = new StudentSubject();
         final Student foundedStudent = findStudentById(studentSubjectCreateRequest.getStudentId());
+
         final Subject foundedSubject = findSubjectBySubjectId(studentSubjectCreateRequest.getSubjectId());
 
+        foundedStudent.getSubjects().add(foundedSubject);
 
-        studentSubject.setStudentId(studentSubjectCreateRequest.getStudentId());
-        studentSubject.setSubjectId(studentSubjectCreateRequest.getSubjectId());
-
-
-
-        studentSubjectRepository.save(studentSubject);
+        studentRepository.save(foundedStudent);
 
         return new SuccessDataResult(modelMapper.map(foundedSubject, SubjectGetResponse.class), ResultMessages.SUCCESS_CREATE_ENTITY);
     }
 
-    //TODO: HATA VAR; UPDATE ISLEMI YAPMIYOR...
     @Override
-    public DataResult<SubjectGetResponse> updateStudentSubject(Long studentId, Long subjectId, StudentSubjectUpdateRequest studentSubjectUpdateRequest) {
-        final Student foundedStudent = findStudentById(studentSubjectUpdateRequest.getStudentId());
-        final Subject foundedSubject = findSubjectBySubjectId(studentSubjectUpdateRequest.getSubjectId());
+    @Transactional
+    public DataResult<StudentGetResponse> updateStudentSubject(final Long targetSubjectId, final StudentSubjectUpdateRequest studentSubjectUpdateRequest) {
+        final Student targetStudent = findStudentById(studentSubjectUpdateRequest.getStudentId());
 
-        StudentSubject foundedStudentSubject = findStudentSubjectByStudentIdAndSubjectId(studentId, subjectId);
-        foundedStudentSubject.setSubjectId(studentSubjectUpdateRequest.getSubjectId());
-        foundedStudentSubject.setStudentId(studentSubjectUpdateRequest.getStudentId());
+        final Subject studentTargetSubject = findSubjectBySubjectId(targetSubjectId);
 
-        studentSubjectRepository.save(foundedStudentSubject);
+        targetStudent.getSubjects().remove(studentTargetSubject);
 
-        return new SuccessDataResult(modelMapper.map(foundedSubject, SubjectGetResponse.class), ResultMessages.SUCCESS_UPDATE_ENTITY);
+        final Subject newSubject = findSubjectBySubjectId(studentSubjectUpdateRequest.getSubjectId());
+
+        targetStudent.getSubjects().add(newSubject);
+
+        studentRepository.save(targetStudent);
+
+        return new SuccessDataResult(modelMapper.map(targetStudent, StudentGetResponse.class), ResultMessages.SUCCESS_UPDATE_ENTITY);
+    }
+
+    @Override
+    public Result deleteStudentSubject(final Long studentId, final Long subjectId) {
+        final Student targetStudent = findStudentById(studentId);
+
+        final Subject targetSubject = findSubjectBySubjectId(subjectId);
+
+        targetStudent.getSubjects().remove(targetSubject);
+
+        studentRepository.save(targetStudent);
+
+
+        return new SuccessResult(ResultMessages.SUCCESS_DELETE_ENTITY);
     }
 
     //PRIVATE HELPER METHODS
@@ -180,11 +195,6 @@ public class StudentServiceImpl implements StudentService {
         Subject foundedSubject = Optional.ofNullable(subjectRepository.getSubjectById(subjectId))
                 .orElseThrow(() -> new EntityNotFoundException("Ders bulunamadi."));
         return foundedSubject;
-    }
-
-    private StudentSubject findStudentSubjectByStudentIdAndSubjectId(Long studentId, Long subjectId){
-        return Optional.ofNullable(studentSubjectRepository.getStudentSubjectByStudentIdAndSubjectId(studentId, subjectId))
-                .orElseThrow(() -> new EntityNotFoundException("Ogrenci dersi bulunamadi."));
     }
 
     private Address getStudentAddressByStudentId(Long studentId){

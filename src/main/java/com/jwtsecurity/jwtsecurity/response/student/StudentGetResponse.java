@@ -14,6 +14,6 @@ public class StudentGetResponse {
 
     private String surname;
 
-    private List<Subject> subjects;
+    //private List<Subject> subjects;
 
 }

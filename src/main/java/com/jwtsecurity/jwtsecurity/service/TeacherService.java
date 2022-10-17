@@ -3,6 +3,9 @@ package com.jwtsecurity.jwtsecurity.service;
 import com.jwtsecurity.jwtsecurity.exception.EntityNotFoundException;
 import com.jwtsecurity.jwtsecurity.request.teacher.TeacherCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.teacher.TeacherUpdateRequest;
+import com.jwtsecurity.jwtsecurity.request.teachersubject.TeacherSubjectCreateRequest;
+import com.jwtsecurity.jwtsecurity.request.teachersubject.TeacherSubjectUpdateRequest;
+import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
 import com.jwtsecurity.jwtsecurity.response.TeacherGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.*;
 import org.springframework.stereotype.Service;
@@ -20,5 +23,15 @@ public interface TeacherService {
     DataResult<TeacherGetResponse> updateTeacher(Long teacherId, TeacherUpdateRequest teacherUpdateRequest) throws EntityNotFoundException;
 
     Result deleteTeacher(Long teacherId) throws EntityNotFoundException;
+
+
+    //SUBJECT
+    DataResult<List<SubjectGetResponse>> getTeacherSubjectsByTeacherId(Long teacherId);
+
+    DataResult<SubjectGetResponse> createTeacherSubject(TeacherSubjectCreateRequest teacherSubjectCreateRequest);
+
+    DataResult<SubjectGetResponse> updateTeacherSubject(Long targetSubject, TeacherSubjectUpdateRequest teacherSubjectUpdateRequest);
+
+    Result deleteTeacherSubject(Long teacherId, Long subjectId);
 
 }
