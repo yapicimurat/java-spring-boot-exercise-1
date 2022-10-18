@@ -22,11 +22,9 @@ import com.jwtsecurity.jwtsecurity.response.result.SuccessDataResult;
 import com.jwtsecurity.jwtsecurity.response.result.SuccessResult;
 import com.jwtsecurity.jwtsecurity.response.student.StudentGetResponse;
 import com.jwtsecurity.jwtsecurity.service.StudentService;
-import org.hibernate.Transaction;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +48,9 @@ public class StudentServiceImpl implements StudentService {
     public DataResult<List<StudentGetResponse>> getAllStudents() {
         List<StudentGetResponse> studentGetResponseList = new ArrayList<>();
 
-        studentRepository.findAll().forEach(student -> studentGetResponseList.add(modelMapper.map(student, StudentGetResponse.class)));
+        studentRepository.findAll().forEach(student -> {
+            studentGetResponseList.add(modelMapper.map(student, StudentGetResponse.class));
+        });
 
         return new SuccessDataResult(studentGetResponseList, ResultMessages.EMPTY);
     }
@@ -59,7 +59,9 @@ public class StudentServiceImpl implements StudentService {
     public DataResult<StudentGetResponse> getStudentById(Long studentId) {
         Student foundedStudent = findStudentById(studentId);
 
-        return new SuccessDataResult(modelMapper.map(foundedStudent, StudentGetResponse.class), ResultMessages.EMPTY);
+        StudentGetResponse studentGetResponse = modelMapper.map(foundedStudent, StudentGetResponse.class);
+
+        return new SuccessDataResult(studentGetResponse, ResultMessages.EMPTY);
     }
 
     @Override
@@ -136,8 +138,13 @@ public class StudentServiceImpl implements StudentService {
     public DataResult<List<SubjectGetResponse>> getStudentSubjectsByStudentId(Long studentId) {
         final Student foundedStudent = findStudentById(studentId);
 
-        return null;
-        //return new SuccessDataResult(modelMapper.map(foundedStudent.getStudentSubjects(), SubjectGetResponse.class), ResultMessages.EMPTY);
+        List<SubjectGetResponse> subjectGetResponses = new ArrayList<>();
+
+        foundedStudent.getSubjects().forEach(subject ->
+            subjectGetResponses.add(modelMapper.map(subject, SubjectGetResponse.class))
+        );
+
+        return new SuccessDataResult(subjectGetResponses, ResultMessages.EMPTY);
     }
 
     @Override

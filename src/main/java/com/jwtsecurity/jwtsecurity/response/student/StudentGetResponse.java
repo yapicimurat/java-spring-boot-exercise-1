@@ -1,6 +1,7 @@
 package com.jwtsecurity.jwtsecurity.response.student;
 
 import com.jwtsecurity.jwtsecurity.model.Subject;
+import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
 import lombok.Data;
 
 import java.util.List;
@@ -14,6 +15,6 @@ public class StudentGetResponse {
 
     private String surname;
 
-    //private List<Subject> subjects;
+    private List<SubjectGetResponse> subjects;
 
 }

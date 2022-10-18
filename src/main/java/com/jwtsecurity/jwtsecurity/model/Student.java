@@ -28,7 +28,7 @@ public class Student extends BaseModel {
     //Student -> Student_Subject; One-to-Many relation | Subject -> Student; One-to-Many relation
     //then Student -> Subject; Many-to-Many relation...
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "student_subject",
         joinColumns = @JoinColumn(name = "student_id"),

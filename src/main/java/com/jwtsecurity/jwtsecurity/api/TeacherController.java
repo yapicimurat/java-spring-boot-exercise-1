@@ -2,6 +2,9 @@ package com.jwtsecurity.jwtsecurity.api;
 
 import com.jwtsecurity.jwtsecurity.request.teacher.TeacherCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.teacher.TeacherUpdateRequest;
+import com.jwtsecurity.jwtsecurity.request.teachersubject.TeacherSubjectCreateRequest;
+import com.jwtsecurity.jwtsecurity.request.teachersubject.TeacherSubjectUpdateRequest;
+import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
 import com.jwtsecurity.jwtsecurity.response.TeacherGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.DataResult;
 import com.jwtsecurity.jwtsecurity.response.result.Result;
@@ -9,6 +12,7 @@ import com.jwtsecurity.jwtsecurity.service.TeacherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
 @RestController
@@ -49,4 +53,26 @@ public class TeacherController {
     public ResponseEntity<Result> deleteTeacher(@PathVariable("id") Long teacherId){
         return ResponseEntity.ok(teacherService.deleteTeacher(teacherId));
     }
+
+    //SUBJECT
+    @GetMapping("/{id}/subject")
+    public ResponseEntity<DataResult<List<SubjectGetResponse>>> getTeacherSubjectsByTeacherId(@PathVariable("id") Long teacherId){
+        return ResponseEntity.ok(teacherService.getTeacherSubjectsByTeacherId(teacherId));
+    }
+
+    @PostMapping("/subject")
+    public ResponseEntity<DataResult<SubjectGetResponse>> createTeacherSubject(@RequestBody TeacherSubjectCreateRequest teacherSubjectCreateRequest){
+        return ResponseEntity.ok(teacherService.createTeacherSubject(teacherSubjectCreateRequest));
+    }
+
+    @PutMapping("/subject/{targetSubjectId}")
+    public ResponseEntity<DataResult<SubjectGetResponse>> updateTeacherSubject(@PathVariable("targetSubjectId") Long targetSubjectId, @RequestBody TeacherSubjectUpdateRequest teacherSubjectUpdateRequest){
+        return ResponseEntity.ok(teacherService.updateTeacherSubject(targetSubjectId, teacherSubjectUpdateRequest));
+    }
+
+    @DeleteMapping("/{teacherId}/subject/{subjectId}")
+    public ResponseEntity<Result> deleteTeacherSubject(@PathVariable("teacherId") Long teacherId, @PathVariable("subjectId") Long subjectId){
+        return ResponseEntity.ok(teacherService.deleteTeacherSubject(teacherId, subjectId));
+    }
+
 }
