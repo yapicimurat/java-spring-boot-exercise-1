@@ -2,7 +2,7 @@ package com.jwtsecurity.jwtsecurity.service;
 
 import com.jwtsecurity.jwtsecurity.request.subject.SubjectCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.subject.SubjectUpdateRequest;
-import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
+import com.jwtsecurity.jwtsecurity.response.subject.SubjectGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.*;
 
 import java.util.List;

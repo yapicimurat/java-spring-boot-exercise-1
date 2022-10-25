@@ -1,4 +1,4 @@
-package com.jwtsecurity.jwtsecurity.response;
+package com.jwtsecurity.jwtsecurity.response.address;
 
 import lombok.Data;
 

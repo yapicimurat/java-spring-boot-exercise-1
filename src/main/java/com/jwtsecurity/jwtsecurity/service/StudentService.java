@@ -7,8 +7,8 @@ import com.jwtsecurity.jwtsecurity.request.student.StudentCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.student.StudentUpdateRequest;
 import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.studentSubject.StudentSubjectUpdateRequest;
-import com.jwtsecurity.jwtsecurity.response.AddressGetResponse;
-import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
+import com.jwtsecurity.jwtsecurity.response.address.AddressGetResponse;
+import com.jwtsecurity.jwtsecurity.response.subject.SubjectGetResponse;
 import com.jwtsecurity.jwtsecurity.response.student.StudentGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.*;
 

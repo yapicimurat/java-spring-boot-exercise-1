@@ -5,10 +5,9 @@ import com.jwtsecurity.jwtsecurity.request.teacher.TeacherCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.teacher.TeacherUpdateRequest;
 import com.jwtsecurity.jwtsecurity.request.teachersubject.TeacherSubjectCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.teachersubject.TeacherSubjectUpdateRequest;
-import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
-import com.jwtsecurity.jwtsecurity.response.TeacherGetResponse;
+import com.jwtsecurity.jwtsecurity.response.subject.SubjectGetResponse;
+import com.jwtsecurity.jwtsecurity.response.teacher.TeacherGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.*;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

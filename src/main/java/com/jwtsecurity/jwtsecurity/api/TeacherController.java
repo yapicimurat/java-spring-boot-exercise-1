@@ -4,15 +4,14 @@ import com.jwtsecurity.jwtsecurity.request.teacher.TeacherCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.teacher.TeacherUpdateRequest;
 import com.jwtsecurity.jwtsecurity.request.teachersubject.TeacherSubjectCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.teachersubject.TeacherSubjectUpdateRequest;
-import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
-import com.jwtsecurity.jwtsecurity.response.TeacherGetResponse;
+import com.jwtsecurity.jwtsecurity.response.subject.SubjectGetResponse;
+import com.jwtsecurity.jwtsecurity.response.teacher.TeacherGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.DataResult;
 import com.jwtsecurity.jwtsecurity.response.result.Result;
 import com.jwtsecurity.jwtsecurity.service.TeacherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 
 @RestController

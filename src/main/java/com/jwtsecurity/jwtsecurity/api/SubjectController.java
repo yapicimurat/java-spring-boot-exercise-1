@@ -2,7 +2,7 @@ package com.jwtsecurity.jwtsecurity.api;
 
 import com.jwtsecurity.jwtsecurity.request.subject.SubjectCreateRequest;
 import com.jwtsecurity.jwtsecurity.request.subject.SubjectUpdateRequest;
-import com.jwtsecurity.jwtsecurity.response.SubjectGetResponse;
+import com.jwtsecurity.jwtsecurity.response.subject.SubjectGetResponse;
 import com.jwtsecurity.jwtsecurity.response.result.DataResult;
 import com.jwtsecurity.jwtsecurity.response.result.Result;
 import com.jwtsecurity.jwtsecurity.service.SubjectService;
